@@ -1,0 +1,33 @@
+# Similar to ci-simple.yml, but has an extra step to trigger a Render deployment when tests pass.
+# You must create a secret named RENDER_DEPLOY_HOOK_URL in your repository.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Run unit tests
+        run: |
+          yarn
+          yarn test
+
+      - name: Trigger deploy
+
+        # Only proceed if the branch is master
+        if: github.ref == 'refs/heads/master'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+
+        run: |
+          curl "$deploy_url"

@@ -1,0 +1,23 @@
+# Runs unit tests on every push to a Pull Request or to the master branch
+# Run `yarn; yarn test` and caches node_modules for the next run
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Run unit tests
+        run: |
+          yarn
+          yarn test

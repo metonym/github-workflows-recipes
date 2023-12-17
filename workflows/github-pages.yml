@@ -1,0 +1,24 @@
+# Deploy your app to GitHub Pages when a push is made to the master branch.
+# Deploy step should not execute if the previous build step fails.
+# GITHUB_TOKEN is not a user-configured secret, it is provided by GitHub Actions.
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build app
+        run: |
+          yarn
+          yarn rollup -c
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
