@@ -12,12 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build app
-        run: |
-          yarn
-          yarn rollup -c
+      - name: Install dependencies
+        run: yarn install
 
-      - name: Deploy to gh-pages
+      - name: Build app
+        run: yarn build
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

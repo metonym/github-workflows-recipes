@@ -1,5 +1,7 @@
 # Publish a package to npm when a tag starting with "v" is pushed to remote.
 # You must create a secret named NPM_AUTH_TOKEN in your repository.
+# Currently, only npm supports publishing packages with provenance
+# https://docs.npmjs.com/generating-provenance-statements
 
 on:
   push:
@@ -23,8 +25,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-        # Currently, only npm supports publishing packages with provenance
-        # https://docs.npmjs.com/generating-provenance-statements
-        run: |
-          npm install --force
-          npm publish --provenance --access public
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Publish package
+        run: npm publish --provenance --access public
