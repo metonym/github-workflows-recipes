@@ -1,4 +1,4 @@
-# Similar to ci-simple.yml, but has an extra step to trigger a Render deployment when tests pass.
+# Similar to ci-bun.yml, but has an extra step to trigger a Render deployment when tests pass.
 # You must create a secret named RENDER_DEPLOY_HOOK_URL in your repository.
 
 on:
@@ -11,17 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        id: yarn-cache
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: yarn install
+        run: bun install
 
       - name: Run unit tests
-        run: yarn test
+        run: bun run test
 
       - name: Trigger deploy
         # Only proceed if the branch is master
